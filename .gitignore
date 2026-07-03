@@ -4,3 +4,4 @@ esp32_toolchain.cmake
 *.a
 include
 build/
+dependencies.lock
