@@ -104,7 +104,7 @@ endforeach()
 
 target_compile_definitions(${COMPONENT_LIB} PUBLIC RCL_MICROROS)
 add_dependencies(${COMPONENT_LIB} libmicroros-prebuilt)
-target_link_libraries(${COMPONENT_LIB} INTERFACE libmicroros-prebuilt)
+target_link_libraries(${COMPONENT_LIB} INTERFACE "-Wl,--whole-archive" libmicroros-prebuilt "-Wl,--no-whole-archive")
 
 set_directory_properties( PROPERTIES ADDITIONAL_CLEAN_FILES
     "${COMPONENT_DIR}/include;${COMPONENT_DIR}/micro_ros_dev;${COMPONENT_DIR}/micro_ros_src;${COMPONENT_DIR}/esp32_toolchain.cmake" )

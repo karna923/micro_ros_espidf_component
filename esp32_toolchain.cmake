@@ -3,16 +3,16 @@ include(CMakeForceCompiler)
 set(CMAKE_SYSTEM_NAME Generic)
 
 set(idf_target "esp32")
-set(idf_path "/opt/esp/idf")
+set(idf_path "/home/niles/esp/esp-idf")
 
 set(RISCV_TARGETS "esp32c3" "esp32c6")
 
 if("${idf_target}" IN_LIST RISCV_TARGETS)
     set(CMAKE_SYSTEM_PROCESSOR riscv)
-    set(FLAGS "-ffunction-sections -fdata-sections" CACHE STRING "" FORCE)
+    set(FLAGS "-ffunction-sections -fdata-sections -DCONFIG_LIBC_NEWLIB=1" CACHE STRING "" FORCE)
 else()
     set(CMAKE_SYSTEM_PROCESSOR xtensa)
-    set(FLAGS "-mlongcalls -ffunction-sections -fdata-sections" CACHE STRING "" FORCE)
+    set(FLAGS "-mlongcalls -ffunction-sections -fdata-sections -DCONFIG_LIBC_NEWLIB=1" CACHE STRING "" FORCE)
 endif()
 
 set(CMAKE_CROSSCOMPILING 1)
@@ -23,8 +23,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-set(CMAKE_C_COMPILER /opt/esp/tools/xtensa-esp-elf/esp-13.2.0_20250707/xtensa-esp-elf/bin/xtensa-esp32-elf-gcc)
-set(CMAKE_CXX_COMPILER /opt/esp/tools/xtensa-esp-elf/esp-13.2.0_20250707/xtensa-esp-elf/bin/xtensa-esp32-elf-g++)
+set(CMAKE_C_COMPILER /home/niles/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32-elf-gcc)
+set(CMAKE_CXX_COMPILER /home/niles/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/bin/xtensa-esp32-elf-g++)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAGS} ${IDF_INCLUDES}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti ${FLAGS} ${IDF_INCLUDES}")
@@ -32,13 +32,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti ${FLAGS} ${IDF
 add_compile_definitions(ESP_PLATFORM LWIP_IPV4 LWIP_IPV6 PLATFORM_NAME_FREERTOS)
 
 include_directories(
-        "/project/build/config"
+        "/home/niles/outdoor-autonomous-robot/firmware/esp32_2/build/config"
         ${idf_path}/components/soc/${idf_target}/include
     )
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(UCLIENT_PROFILE_UDP OFF CACHE BOOL "" FORCE)
-set(UCLIENT_PROFILE_TCP OFF CACHE BOOL "" FORCE)
-set(UCLIENT_PROFILE_CUSTOM_TRANSPORT ON CACHE BOOL "" FORCE)
-set(UCLIENT_PROFILE_DISCOVERY OFF CACHE BOOL "" FORCE)
-set(RMW_UXRCE_TRANSPORT "custom" CACHE STRING "" FORCE)
