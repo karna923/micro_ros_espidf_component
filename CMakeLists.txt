@@ -11,8 +11,31 @@ if(BUILD_WLAN_INTERFACE)
     list(APPEND COMPONENT_SRC "network_interfaces/uros_wlan_netif.c")
 endif()
 
+file(GLOB UROS_INSTALL_PKG_DIRS LIST_DIRECTORIES true
+     "${CMAKE_CURRENT_SOURCE_DIR}/micro_ros_src/install/include/*")
+set(UROS_INSTALL_PKG_INCLUDES "")
+foreach(pkgdir ${UROS_INSTALL_PKG_DIRS})
+    if(IS_DIRECTORY ${pkgdir})
+        file(RELATIVE_PATH pkgrel ${CMAKE_CURRENT_SOURCE_DIR} ${pkgdir})
+        list(APPEND UROS_INSTALL_PKG_INCLUDES ${pkgrel})
+    endif()
+endforeach()
+
 idf_component_register(SRCS ${COMPONENT_SRC}
                        INCLUDE_DIRS "network_interfaces"
+			   "include"
+                           "micro_ros_src/src/rcl/rcl/include"
+                           "micro_ros_src/src/rclc/rclc/include"
+			   "micro_ros_src/src/rcutils/include"
+                           "micro_ros_src/src/rmw/rmw/include"
+			   "micro_ros_src/build/rcutils/include"
+                           ${UROS_INSTALL_PKG_INCLUDES}
+       			   "micro_ros_src/src/rmw_microxrcedds/rmw_microxrcedds_c/include"
+       			   "micro_ros_src/src/rosidl/rosidl_runtime_c/include"
+       			   "micro_ros_src/src/rosidl/rosidl_typesupport_interface/include"
+       			   "micro_ros_src/src/rosidl/rosidl_typesupport_introspection_c/include"
+       		  	   "micro_ros_src/src/rosidl_typesupport/rosidl_typesupport_c/include"
+          		   "micro_ros_src/src/rosidl_typesupport_microxrcedds/rosidl_typesupport_microxrcedds_c/include"
                        REQUIRES nvs_flash esp_wifi esp_eth lwip)
 
 if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
@@ -58,6 +81,7 @@ endforeach()
 
 # Workaround for https://github.com/ros2/rosidl/pull/739
 string(APPEND IDF_INCLUDES "-I${COMPONENT_DIR}/include_override")
+string(APPEND IDF_INCLUDES " -I${CMAKE_BINARY_DIR}/config")
 
 # Create a string with all packages with a for loop
 foreach(package ${PACKAGES})
